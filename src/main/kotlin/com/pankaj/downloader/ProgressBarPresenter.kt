@@ -1,6 +1,6 @@
 package com.pankaj.downloader
 
-class ProgressBarPresenter(val render: (String) -> Unit, val scalingFactor: Int = 10) : ProgressPresenter {
+open class ProgressBarPresenter(val render: (String) -> Unit, val scalingFactor: Int = 10) : ProgressPresenter {
     private val upperBound = 100
     private val scaledUpperBound = upperBound / scalingFactor
 
