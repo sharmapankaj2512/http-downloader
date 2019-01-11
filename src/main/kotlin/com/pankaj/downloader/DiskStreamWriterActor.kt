@@ -7,9 +7,9 @@ import java.io.*
 class DiskStreamWriterActor : Actor(), StreamWriter {
     private val outputStream = BufferedOutputStream(FileOutputStream("/tmp/test"))
 
-    override fun append(bytes: ByteArray): Completes<Double> {
-        outputStream.write(bytes)
-        return completes<Boolean>().with(bytes.size.toDouble())
+    override fun append(data: ByteArray): Completes<Double> {
+        outputStream.write(data)
+        return completes<Double>().with(data.size.toDouble())
     }
 
     override fun flush(): Completes<Boolean> {

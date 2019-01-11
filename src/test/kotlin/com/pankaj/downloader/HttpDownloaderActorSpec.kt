@@ -3,7 +3,6 @@ package com.pankaj.downloader
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import io.kotlintest.specs.StringSpec
 import io.mockk.*
 import io.vlingo.actors.Definition
@@ -42,7 +41,7 @@ class HttpDownloaderActorSpec : StringSpec({
                 )
         )
 
-        httpDownloader.startDownload()
+        httpDownloader.download()
 
         Thread.sleep(20000)
 

@@ -2,7 +2,6 @@ package com.pankaj.downloader
 
 import io.vlingo.actors.Actor
 import io.vlingo.common.Completes
-import java.io.File
 import java.io.InputStream
 import java.net.URL
 
@@ -12,25 +11,26 @@ class HttpDownloaderActor(
     private val tracker: ProgressTracker
 ) : Actor(), HttpDownloader {
 
-    override fun startDownload(): Completes<Boolean> {
+    override fun download(): Completes<Boolean> {
         val connection = HttpRangeConnection(url)
         val inputStream = connection.stream()
         val contentLength = connection.contentLength().toDouble()
         tracker.upperBound(contentLength)
-        download(inputStream)
-        return completes<Boolean>()
+        return download(inputStream)
     }
 
-    private fun download(stream: InputStream) {
-        var bytes = ByteArray(1000)
-        while (stream.read(bytes) != -1) {
-            streamWriter.append(bytes.clone()).andThenConsume {
+    private fun download(stream: InputStream): Completes<Boolean> {
+        val buffer = ByteArray(1000)
+        var size = stream.read(buffer)
+        while (size != -1) {
+            streamWriter.append(buffer.copyOfRange(0, size)).andThenConsume {
                 tracker.increaseBy(it)
             }
-            bytes = ByteArray(1000)
+            size = stream.read(buffer)
         }
         streamWriter.flush().andThenConsume {
             completesEventually().with(true)
         }
+        return completes<Boolean>()
     }
 }
