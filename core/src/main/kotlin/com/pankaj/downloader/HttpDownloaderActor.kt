@@ -1,5 +1,6 @@
 package com.pankaj.downloader
 
+import com.pankaj.downloader.http.HttpRangeConnection
 import io.vlingo.actors.Actor
 import io.vlingo.common.Completes
 import java.io.InputStream

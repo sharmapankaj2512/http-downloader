@@ -1,5 +1,7 @@
 package com.pankaj.downloader
 
+import com.pankaj.downloader.plugin.tracker.ProgressPresenter
+import com.pankaj.downloader.plugin.tracker.ProgressTrackerActor
 import io.kotlintest.data.forall
 import io.kotlintest.specs.StringSpec
 import io.kotlintest.tables.row

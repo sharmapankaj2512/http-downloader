@@ -1,4 +1,4 @@
-package com.pankaj.downloader
+package com.pankaj.downloader.http
 
 import java.io.InputStream
 import java.net.HttpURLConnection

@@ -1,9 +1,13 @@
-package com.pankaj.downloader
+package com.pankaj.downloader.app
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.required
+import com.pankaj.downloader.*
+import com.pankaj.downloader.app.presenter.ConsoleProgressBarPresenter
+import com.pankaj.downloader.plugin.tracker.ProgressTrackerActor
+import com.pankaj.downloader.plugin.writer.DiskStreamWriterActor
 import io.vlingo.actors.Definition
 import io.vlingo.actors.World
 import java.io.File

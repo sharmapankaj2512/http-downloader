@@ -1,2 +1,4 @@
-rootProject.name = 'downloader'
+rootProject.name = 'http-downloader'
+include 'core'
+include 'app'
 

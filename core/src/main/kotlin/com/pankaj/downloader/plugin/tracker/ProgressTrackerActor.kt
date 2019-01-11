@@ -1,8 +1,10 @@
-package com.pankaj.downloader
+package com.pankaj.downloader.plugin.tracker
 
+import com.pankaj.downloader.ProgressTracker
 import io.vlingo.actors.Actor
 
-class ProgressTrackerActor(private val progressPresenter: ProgressPresenter) : Actor(), ProgressTracker {
+class ProgressTrackerActor(private val progressPresenter: ProgressPresenter) : Actor(),
+    ProgressTracker {
 
     private var upperBound: Double = 0.0
     private var completed: Double = 0.0

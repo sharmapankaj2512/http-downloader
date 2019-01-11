@@ -1,5 +1,6 @@
-package com.pankaj.downloader
+package com.pankaj.downloader.plugin.writer
 
+import com.pankaj.downloader.StreamWriter
 import io.vlingo.actors.Actor
 import io.vlingo.common.Completes
 import java.io.*
