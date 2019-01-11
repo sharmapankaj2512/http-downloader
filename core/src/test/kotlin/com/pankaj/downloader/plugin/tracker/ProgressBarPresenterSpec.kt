@@ -1,6 +1,5 @@
-package com.pankaj.downloader
+package com.pankaj.downloader.plugin.tracker
 
-import com.pankaj.downloader.plugin.tracker.ProgressBarPresenter
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 

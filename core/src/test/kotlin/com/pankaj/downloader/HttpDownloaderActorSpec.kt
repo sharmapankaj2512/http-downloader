@@ -7,11 +7,11 @@ import io.kotlintest.specs.StringSpec
 import io.mockk.*
 import io.vlingo.actors.Definition
 import io.vlingo.actors.World
+import io.vlingo.common.Completes
 import java.net.URL
 
 
 class HttpDownloaderActorSpec : StringSpec({
-    // FOR NOW ASSUME THAT DOWNLOADER SAVES TO DISK FUTURE ADD AN ACTOR FOR IT
     val world = World.startWithDefaults("http-downloader")
     val tracker = mockk<ProgressTracker>()
     val writer = mockk<StreamWriter>()
@@ -19,9 +19,7 @@ class HttpDownloaderActorSpec : StringSpec({
     val definition = Definition.has(HttpDownloaderActor::class.java, Definition.parameters(url, writer, tracker))
     val httpDownloader = world.actorFor(definition, HttpDownloader::class.java)
 
-
-
-    "test something" {
+    "should download http content and notify the subscribers" {
         //GIVEN
         WireMock.configureFor(8089)
         val wireMockServer = WireMockServer(8089)
@@ -29,8 +27,8 @@ class HttpDownloaderActorSpec : StringSpec({
 
         every { tracker.upperBound(any()) } just Runs
         every { tracker.increaseBy(any()) } just Runs
-        every { writer.append(any()) } just Runs
-        every { writer.flush() } just Runs
+        every { writer.append(any()) } returns Completes.withSuccess(1.0)
+        every { writer.flush() } returns Completes.withSuccess(true)
 
         stubFor(
             get(urlEqualTo(url.toString()))
@@ -41,9 +39,7 @@ class HttpDownloaderActorSpec : StringSpec({
                 )
         )
 
-        httpDownloader.download()
-
-        Thread.sleep(20000)
+        httpDownloader.download().await()
 
         verify { tracker.upperBound(any()) }
         verify { tracker.increaseBy(any()) }
