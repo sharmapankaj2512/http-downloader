@@ -4,8 +4,8 @@ import io.vlingo.actors.Actor
 import io.vlingo.common.Completes
 import java.io.*
 
-class DiskStreamWriterActor : Actor(), StreamWriter {
-    private val outputStream = BufferedOutputStream(FileOutputStream("/tmp/test"))
+class DiskStreamWriterActor(fullPath: String) : Actor(), StreamWriter {
+    private val outputStream = BufferedOutputStream(FileOutputStream(fullPath))
 
     override fun append(data: ByteArray): Completes<Double> {
         outputStream.write(data)

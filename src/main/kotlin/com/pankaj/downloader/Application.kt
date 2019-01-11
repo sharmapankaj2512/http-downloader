@@ -1,23 +1,42 @@
 package com.pankaj.downloader
 
+import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.option
+import com.github.ajalt.clikt.parameters.options.required
 import io.vlingo.actors.Definition
 import io.vlingo.actors.World
+import java.io.File
 import java.net.URL
+import java.nio.file.Paths
 
-fun main(args: Array<String>) {
-    val world = World.startWithDefaults("http-downloader")
-    val presenter = ConsoleProgressBarPresenter()
+class Application: CliktCommand() {
+    val url: String by option(help="Http url of the resource to be downloaded").required()
+    val path: String by option(help="Path where downloaded file will be saved").default("/tmp/http-downloader")
 
-    val writerDefinition = Definition.has(DiskStreamWriterActor::class.java, Definition.NoParameters)
-    val writer = world.actorFor(writerDefinition, StreamWriter::class.java)
-    val trackerDefinition = Definition.has(ProgressTrackerActor::class.java, Definition.parameters(presenter))
-    val tracker = world.actorFor(trackerDefinition, ProgressTracker::class.java)
-    val url = URL("http://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4")
-    val downloaderDefinition =
-        Definition.has(HttpDownloaderActor::class.java, Definition.parameters(url, writer, tracker))
-    val httpDownloader = world.actorFor(downloaderDefinition, HttpDownloader::class.java)
+    override fun run() {
+        val url = URL(url)
+        val fileName = Paths.get(url.path).fileName.toString()
+        val downloadPath = Paths.get(path, fileName).toAbsolutePath().toString()
+        File(path).parentFile.mkdirs()
+        start(downloadPath, url)
+    }
 
-    httpDownloader.download().andThenConsume {
-        world.terminate()
+    private fun start(downloadPath: String, url: URL) {
+        val presenter = ConsoleProgressBarPresenter()
+        val world = World.startWithDefaults("http-downloader")
+        val writerDefinition = Definition.has(DiskStreamWriterActor::class.java, Definition.parameters(downloadPath))
+        val writer = world.actorFor(writerDefinition, StreamWriter::class.java)
+        val trackerDefinition = Definition.has(ProgressTrackerActor::class.java, Definition.parameters(presenter))
+        val tracker = world.actorFor(trackerDefinition, ProgressTracker::class.java)
+        val downloaderDefinition =
+            Definition.has(HttpDownloaderActor::class.java, Definition.parameters(url, writer, tracker))
+        val httpDownloader = world.actorFor(downloaderDefinition, HttpDownloader::class.java)
+
+        httpDownloader.download().andThenConsume {
+            world.terminate()
+        }
     }
 }
+
+fun main(args: Array<String>) = Application().main(args)
