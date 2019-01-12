@@ -22,7 +22,7 @@ class Application: CliktCommand() {
         val url = URL(url)
         val fileName = Paths.get(url.path).fileName.toString()
         val downloadPath = Paths.get(path, fileName).toAbsolutePath().toString()
-        File(path).parentFile.mkdirs()
+        File(path).mkdirs()
         start(downloadPath, url)
     }
 
